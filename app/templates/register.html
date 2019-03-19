@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}登録画面{% endblock %}
+{% block main %}
+<div class="register-area">
+  <form id="search-form" action="{{ url_for('register_product') }}" method="post">
+    <input id="search-word" type="text" name="search_word" placeholder="例: Python" autocomplete="off">
+    <input id="search-button" type="submit" value="登録">
+  </form>
+  {{ error }}
+  <div class="registered">
+    <ul id="registered-word">
+      {% for search_word in search_words %}
+        <div class="item-box clearfix">
+          <li class="item registered-text">{{ search_word }}</li>
+          <form class="item" action="{{ url_for('delete_product', search_word=search_word) }}" method="post">
+            <input class="delete-button" type="submit" value="削除">
+          </form>
+        </div>
+      {% else %}
+        <p id="none-registered">登録されている商品名がありません</p>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+{% endblock %}

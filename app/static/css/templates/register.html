@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}登録画面{% endblock %}
+{% block main %}
+<div class="register-area">
+  <form action="{{ url_for('register_product') }}" method="post">
+    <input type="text" name="search_word" placeholder="例: Python">
+    <input type="submit" value="スクレイピング">
+  </form>
+  <div class="registered">
+    <ul>
+      {% for search_word in search_words %}
+        <li>{{ search_word }}</li>
+      {% else %}
+        <p>登録されている商品名がありません</p>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+{% endblock %}

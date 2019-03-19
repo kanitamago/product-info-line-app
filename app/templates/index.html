@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}トップページ{% endblock %}
+{% block main %}
+<div class="main-area clearfix">
+  {% for id, img, img_link, title, price, point in results %}
+    <div class="product-info">
+      <div class="image-box">
+        <a class="image-link" href="{{ img_link }}" target="_blank"></a>
+        <img class="image" src="{{ img }}" alt="商品画像">
+      </div>
+      <div class="text-box switch">
+        <p class="detail-text">詳細</p>
+        <div class="text-mask">
+          <p class="info-title">タイトル</p>
+          <p class="title-info">{{ title }}</p>
+          <p class="info-price">値段</p>
+          <p class="price-info">{{ price }}</p>
+          <p class="info-point">評価</p>
+          <p class="point-info">{{ point }}</p>
+          <form class="line-form" action="{{ url_for('submit_line', id=id) }}" method="post">
+            <input class="to-line-button" type="submit" value="LINEに送信">
+          </form>
+        </div>
+      </div>
+    </div>
+  {% else %}
+  <div id="none-product">
+    <p>商品がありません</p>
+    <p>登録画面から商品名を登録してください</p>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

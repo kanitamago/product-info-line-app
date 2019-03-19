@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <title>{% block title %}{% endblock %}｜Product Infomation Send to My LINE</title>
+    <!--<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  </head>
+  <body>
+    <div class="wrapper">
+      <header id="header">
+        <h1 id="title">
+          <a class="clearfix" href="{{ url_for('index') }}">Product Infomation Send to <span class="float-word" id="my-color">My</span> <span class="float-word" id="line-color">LINE</span></a>
+        </h1>
+        <div id="description">
+          <p><a id="register-link" href="{{ url_for('register') }}">登録画面</a>で商品名を登録しておくと、定期的にその商品の情報をLINEに送信します</p>
+          <p>また、下に表示されている商品をクリックすることでもLINEに送信することができます</p>
+        </div>
+      </header>
+      {% block main %}
+      {% endblock %}
+    </div>
+  </body>
+</html>
