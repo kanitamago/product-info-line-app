@@ -67,109 +67,113 @@ def get_page(search_word):
     print("---下までスクロール---\n")
     driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 
-    #検索結果の1画面に表示されている商品数を取得
-    print("---検索結果の1画面に表示されている商品数を取得---")
-    result_items = driver.find_element_by_class_name("s-result-list").get_attribute("innerHTML")
-    result_items = count_items(result_items)
-    print("取得結果: ", result_items)
+    try:
 
-    for switch_idx, item_id in enumerate(result_items):
+        #検索結果の1画面に表示されている商品数を取得
+        print("---検索結果の1画面に表示されている商品数を取得---")
+        result_items = driver.find_element_by_class_name("s-result-list").get_attribute("innerHTML")
+        result_items = count_items(result_items)
+        print("取得結果: ", result_items)
 
-        #スクレイピング用のページソース
-        source = {}
+        for switch_idx, item_id in enumerate(result_items):
 
-        #ページ遷移のチェック
-        print("\n---ページ遷移のチェック---")
-        print("id = {} ".format(item_id))
-        checked = transition_check(driver, driver.find_element_by_id(item_id))
-        li = None
-        if checked:
-            print("---遷移成功---\n")
-            li = driver.find_element_by_id(item_id)
-        else:
-            print("---遷移失敗---\n")
-            continue
+            #スクレイピング用のページソース
+            source = {}
 
-        #サムネ画像を取得
-        print("---サムネ画像取得---\n")
-        try:
-            source["img"] = li.find_element_by_css_selector(".a-spacing-base .a-section").get_attribute("innerHTML")
-        except:
-            source["img"] = "画像なし"
-        #商品リンクを取得
-        print("---商品リンク取得---\n")
-        try:
-            source["img_link"] = li.find_element_by_css_selector(".a-spacing-base").get_attribute("innerHTML")
-        except:
-            source["img_link"] = "リンクなし"
-        #タイトルを取得
-        print("---タイトル取得---\n")
-        try:
-            source["title"] = li.find_element_by_css_selector(".a-link-normal .s-access-title").get_attribute("innerHTML")
-        except:
-            source["title"] = "タイトルなし"
-        #値段を取得
-        print("---値段取得---\n")
-        try:
-            source["price"] = li.find_element_by_css_selector(".a-link-normal .a-color-price").get_attribute("innerHTML")
-        except:
-            source["price"] = "不明"
-        #評価を取得
-        print("---評価取得---\n")
-        try:
-            source["point"] = li.find_element_by_css_selector(".a-declarative .a-icon-star .a-icon-alt").get_attribute("innerHTML")
-        except:
-            source["point"] = "評価なし"
+            #ページ遷移のチェック
+            print("\n---ページ遷移のチェック---")
+            print("id = {} ".format(item_id))
+            checked = transition_check(driver, driver.find_element_by_id(item_id))
+            li = None
+            if checked:
+                print("---遷移成功---\n")
+                li = driver.find_element_by_id(item_id)
+            else:
+                print("---遷移失敗---\n")
+                continue
 
-        #個々の商品ページへのリンクを持ったオブジェクトを取得
-        #product_info = li.find_element_by_css_selector(".a-link-normal .a-text-normal")
-        #個別の商品ページへ飛ぶ
-        #product_info.click()
+            #サムネ画像を取得
+            print("---サムネ画像取得---\n")
+            try:
+                source["img"] = li.find_element_by_css_selector(".a-spacing-base .a-section").get_attribute("innerHTML")
+            except:
+                source["img"] = "画像なし"
+            #商品リンクを取得
+            print("---商品リンク取得---\n")
+            try:
+                source["img_link"] = li.find_element_by_css_selector(".a-spacing-base").get_attribute("innerHTML")
+            except:
+                source["img_link"] = "リンクなし"
+            #タイトルを取得
+            print("---タイトル取得---\n")
+            try:
+                source["title"] = li.find_element_by_css_selector(".a-link-normal .s-access-title").get_attribute("innerHTML")
+            except:
+                source["title"] = "タイトルなし"
+            #値段を取得
+            print("---値段取得---\n")
+            try:
+                source["price"] = li.find_element_by_css_selector(".a-link-normal .a-color-price").get_attribute("innerHTML")
+            except:
+                source["price"] = "不明"
+            #評価を取得
+            print("---評価取得---\n")
+            try:
+                source["point"] = li.find_element_by_css_selector(".a-declarative .a-icon-star .a-icon-alt").get_attribute("innerHTML")
+            except:
+                source["point"] = "評価なし"
 
-        #読み込み待ち
-        print("---読み込み待ち（5秒）---\n")
-        time.sleep(5)
-
-        #---以降、商品の詳細ページ---
-
-        #スクレイピングするページに移動した上で、下までスクロール
-        print("---スクレイピングする個別ページに移動---\n")
-        driver.switch_to.window(driver.window_handles[switch_idx+1])
-
-        print("---下までスクロール---\n")
-        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-
-        print("---トップレビューと最新レビュー取得---")
-        try:
-            top_review = driver.find_element_by_css_selector("#reviewsMedley .a-row #cm-cr-dp-review-list .celwidget .a-expander-content")
-            source["top_review"] = top_review.get_attribute("innerHTML")
-            #最新のレビューに切り替える
-            review_elem = driver.find_element_by_css_selector("#reviewsMedley .a-row #cm-cr-dp-review-sort-type #cm-cr-sort-dropdown")
-            review_select_elem = Select(review_elem)
-            review_select_elem.select_by_value("recent")
+            #個々の商品ページへのリンクを持ったオブジェクトを取得
+            #product_info = li.find_element_by_css_selector(".a-link-normal .a-text-normal")
+            #個別の商品ページへ飛ぶ
+            #product_info.click()
 
             #読み込み待ち
-            print("---読み込み待ち（5秒間）---")
+            print("---読み込み待ち（5秒）---\n")
             time.sleep(5)
 
-            recent_review = driver.find_element_by_css_selector("#reviewsMedley .a-row #cm-cr-dp-review-list .celwidget .review-text")
-            source["recent_review"] = recent_review.get_attribute("innerHTML")
-            print("---レビュー取得成功---\n")
-        except:
-            print("---レビューなし---\n")
-            source["top_review"] = "レビューなし"
-            source["recent_review"] = "レビューなし"
+            #---以降、商品の詳細ページ---
 
-        #商品データをリストに格納
-        product_list.append(source)
+            #スクレイピングするページに移動した上で、下までスクロール
+            print("---スクレイピングする個別ページに移動---\n")
+            driver.switch_to.window(driver.window_handles[switch_idx+1])
 
-        #最初のページに戻る
-        print("---最初のページに戻る---\n")
-        driver.switch_to.window(driver.window_handles[0])
+            print("---下までスクロール---\n")
+            driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 
-    print("---ドライバー停止---\n")
-    driver.close()
-    driver.quit()
+            print("---トップレビューと最新レビュー取得---")
+            try:
+                top_review = driver.find_element_by_css_selector("#reviewsMedley .a-row #cm-cr-dp-review-list .celwidget .a-expander-content")
+                source["top_review"] = top_review.get_attribute("innerHTML")
+                #最新のレビューに切り替える
+                review_elem = driver.find_element_by_css_selector("#reviewsMedley .a-row #cm-cr-dp-review-sort-type #cm-cr-sort-dropdown")
+                review_select_elem = Select(review_elem)
+                review_select_elem.select_by_value("recent")
+
+                #読み込み待ち
+                print("---読み込み待ち（5秒間）---")
+                time.sleep(5)
+
+                recent_review = driver.find_element_by_css_selector("#reviewsMedley .a-row #cm-cr-dp-review-list .celwidget .review-text")
+                source["recent_review"] = recent_review.get_attribute("innerHTML")
+                print("---レビュー取得成功---\n")
+            except:
+                print("---レビューなし---\n")
+                source["top_review"] = "レビューなし"
+                source["recent_review"] = "レビューなし"
+
+            #商品データをリストに格納
+            product_list.append(source)
+
+            #最初のページに戻る
+            print("---最初のページに戻る---\n")
+            driver.switch_to.window(driver.window_handles[0])
+
+        print("---ドライバー停止---\n")
+        driver.close()
+        driver.quit()
+    except:
+        pass
 
     return product_list
 
